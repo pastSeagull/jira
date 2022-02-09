@@ -1,7 +1,7 @@
 import { useAuth } from "context/auto-context";
 
-export const LoginScreen = () => {
-  const { login, user } = useAuth();
+export const RegisterScreen = () => {
+  const { register } = useAuth();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -9,12 +9,11 @@ export const LoginScreen = () => {
       .value;
     const password = (event.currentTarget.elements[1] as HTMLInputElement)
       .value;
-    login({ username, password });
+    register({ username, password });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {user ? <div>{user.name}</div> : null}
       <div>
         <label htmlFor="username">用户名</label>
         <input type="text" id={"username"} />
@@ -23,7 +22,7 @@ export const LoginScreen = () => {
         <label htmlFor="passowrd">密码</label>
         <input type="password" id={"password"} />
       </div>
-      <button type={"submit"}>登录</button>
+      <button type={"submit"}>注册</button>
     </form>
   );
 };
