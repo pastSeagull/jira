@@ -51,7 +51,6 @@ export const useAsync = <D>(
       })
       .catch((error) => {
         setError(error);
-        console.log(config);
         // 不能return eroor,要用promise
         if (config.throwOnError) return Promise.reject(error);
         return error;
