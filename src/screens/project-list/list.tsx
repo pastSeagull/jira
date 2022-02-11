@@ -1,19 +1,20 @@
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
+import dayjs from "dayjs";
 import { User } from "./search-panel";
-interface Project {
+export interface Project {
   id: string;
   name: string;
   personId: string;
   pin: boolean;
   organization: string;
+  created: number;
 }
 
-interface listProps {
-  list: Project[];
+interface listProps extends TableProps<Project> {
   users: User[];
 }
 
-export const List = ({ list, users }: listProps) => {
+export const List = ({ users, ...props }: listProps) => {
   return (
     <Table
       pagination={false}
@@ -22,6 +23,10 @@ export const List = ({ list, users }: listProps) => {
           title: "名称",
           dataIndex: "name",
           sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+          title: "部门",
+          dataIndex: "organization",
         },
         {
           title: "负责人",
@@ -34,8 +39,20 @@ export const List = ({ list, users }: listProps) => {
             );
           },
         },
+        {
+          title: "创建时间",
+          render(value, project) {
+            return (
+              <span>
+                {project.created
+                  ? dayjs(project.created).format("YYYY-MM-DD")
+                  : "无"}
+              </span>
+            );
+          },
+        },
       ]}
-      dataSource={list}
+      {...props}
     ></Table>
   );
 };

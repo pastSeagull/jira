@@ -1,34 +1,38 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SearchPanel } from "./search-panel";
 import { List } from "./list";
-import { cleanObject, useMount, useDebounce } from "../../utils";
-import { useHttp } from "utils/http";
+import { useDebounce, useDocumentTitle } from "../../utils";
+import styled from "@emotion/styled";
+import { Typography } from "antd";
+import { useProjects } from "utils/project";
+import { useUsers } from "utils/user";
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useState({
     name: "",
     personId: "",
   });
-  const [list, setList] = useState([]);
 
   const debouncedParam = useDebounce(param, 200);
 
-  const [users, setUsers] = useState([]);
+  const { isLoading, error, data: list } = useProjects(debouncedParam);
 
-  const client = useHttp();
+  const { data: users } = useUsers();
 
-  useEffect(() => {
-    client("projects", { data: cleanObject(debouncedParam) }).then(setList);
-  }, [debouncedParam]);
-
-  useMount(() => {
-    client("users").then(setUsers);
-  });
+  useDocumentTitle("项目列表", false);
 
   return (
-    <div>
-      <SearchPanel users={users} param={param} setParam={setParam} />
-      <List users={users} list={list} />
-    </div>
+    <Container>
+      <h1>项目列表</h1>
+      <SearchPanel users={users || []} param={param} setParam={setParam} />
+      {error ? (
+        <Typography.Text type="danger">{error.message}</Typography.Text>
+      ) : null}
+      <List loading={isLoading} users={users || []} dataSource={list || []} />
+    </Container>
   );
 };
+
+const Container = styled.div`
+  padding: 3.2rem;
+`;
