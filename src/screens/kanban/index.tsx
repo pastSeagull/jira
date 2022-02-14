@@ -1,3 +1,3 @@
 export const KanbanScreen = () => {
-  return <div>epic</div>;
+  return <div>看板</div>;
 };

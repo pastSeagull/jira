@@ -3,28 +3,44 @@ import { ButtonNoPadding, Row } from "components/lib";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { useAuth } from "context/auto-context";
 import { ProjectListScreen } from "screens/project-list";
-import { Route, Routes } from "react-router";
-import { BrowserRouter as Router } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { ProjectScreen } from "screens/project";
 import { ProjectPopover } from "components/project-popover";
 import { UserPopover } from "components/user-popover";
 import { Button, Dropdown, Menu } from "antd";
 import { ProjectModal } from "screens/project-list/project-modal";
+import { useEffect } from "react";
+import { resetRoute } from "utils";
 
 export const AuthentictedApp = () => {
+  let navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    location.search !== ""
+      ? navigate("/prjects" + location.search)
+      : navigate("/prjects");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Container>
       <PageHeader />
       <Main>
-        <Router>
-          <Routes>
-            <Route path={"/prjects"} element={<ProjectListScreen />}></Route>
-            <Route
-              path={"/prjects/:projectId/*"}
-              element={<ProjectScreen />}
-            ></Route>
-          </Routes>
-        </Router>
+        <Routes>
+          <Route path={"/prjects"} element={<ProjectListScreen />}></Route>
+          <Route
+            path={"/prjects/:projectId/*"}
+            element={<ProjectScreen />}
+          ></Route>
+        </Routes>
       </Main>
       <ProjectModal />
     </Container>
@@ -36,7 +52,9 @@ const PageHeader = () => {
     <Header between={true}>
       <HeaderLeft gap={true}>
         <ButtonNoPadding type={"link"}>
-          <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
+          <Button type="link" onClick={resetRoute}>
+            <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
+          </Button>
         </ButtonNoPadding>
         <ProjectPopover />
         <UserPopover />
